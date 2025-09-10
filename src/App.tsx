@@ -2,6 +2,7 @@ import { useState } from 'react'
 import LeadsTable from './components/LeadsTable'
 import LeadDetail from './components/LeadDetail'
 import OpportunitiesTable from './components/OpportunitiesTable'
+import ConfirmDialog from './components/ConfirmDialog'
 import { useLeads } from './hooks/useLeads'
 import type { Lead, Opportunity } from './types/models'
 
@@ -9,6 +10,8 @@ export default function App() {
   const leads = useLeads()
   const [selected, setSelected] = useState<Lead | null>(null)
   const [opps, setOpps] = useState<Opportunity[]>([])
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [toRemoveId, setToRemoveId] = useState<string | null>(null)
 
   const handleRowClick = (lead: Lead) => setSelected(lead)
 
@@ -36,14 +39,25 @@ export default function App() {
     setSelected(null)
   }
 
-  const handleRemoveOpportunity = (opportunityId: string) => {
-    setOpps(prev => prev.filter(o => o.id !== opportunityId))
+  const requestRemoveOpportunity = (opportunityId: string) => {
+    setToRemoveId(opportunityId)
+    setConfirmOpen(true)
   }
 
-  const getLead = (leadId: string) => {
-    if (selected?.id === leadId) return selected
-    return leads.leads.find(l => l.id === leadId)
+  const confirmRemove = () => {
+    if (toRemoveId) {
+      setOpps(prev => prev.filter(o => o.id !== toRemoveId))
+    }
+    setToRemoveId(null)
+    setConfirmOpen(false)
   }
+
+  const cancelRemove = () => {
+    setToRemoveId(null)
+    setConfirmOpen(false)
+  }
+
+  const getLead = (leadId: string) => leads.getById(leadId) ?? (selected?.id === leadId ? selected : undefined)
 
   return (
     <div className="mx-auto max-w-6xl space-y-8 p-4">
@@ -61,7 +75,7 @@ export default function App() {
         <OpportunitiesTable
           opportunities={opps}
           getLead={getLead}
-          onRemove={handleRemoveOpportunity}
+          onRemove={requestRemoveOpportunity}
         />
       </section>
 
@@ -70,6 +84,16 @@ export default function App() {
         onClose={() => setSelected(null)}
         onSave={handleSaveLead}
         onConvert={handleConvert}
+      />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Remove opportunity?"
+        description="This action cannot be undone."
+        confirmLabel="Remove"
+        cancelLabel="Cancel"
+        onConfirm={confirmRemove}
+        onCancel={cancelRemove}
       />
     </div>
   )
