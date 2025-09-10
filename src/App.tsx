@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import AppBar from './components/AppBar'
 import LeadsTable from './components/LeadsTable'
 import LeadDetail from './components/LeadDetail'
 import OpportunitiesTable from './components/OpportunitiesTable'
 import ConfirmDialog from './components/ConfirmDialog'
+import ObservabilityPanel from './components/ObservabilityPanel'
 import { useLeads } from './hooks/useLeads'
 import type { Lead, Opportunity } from './types/models'
 
@@ -59,32 +61,36 @@ export default function App() {
     leads.getById(leadId) ?? (selected?.id === leadId ? selected : undefined)
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 p-6">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-semibold tracking-tight text-gray-900">Mini Seller Console</h1>
-        <p className="text-sm text-gray-600">
-          Triage leads, edit details, and convert to opportunities.
-        </p>
-      </div>
-
-      <LeadsTable
-        leads={leads.leads}
-        loading={leads.loading}
-        error={leads.error}
-        query={leads.query}
-        setQuery={leads.setQuery}
-        status={leads.status}
-        setStatus={leads.setStatus}
-        sort={leads.sort}
-        setSort={leads.setSort}
-        onRowClick={handleRowClick}
+    <>
+      <AppBar
+        title="Mini Seller Console"
+        subtitle="Modern, consistent, and accessible"
+        searchValue={leads.query}
+        onSearchChange={leads.setQuery}
       />
 
-      <OpportunitiesTable
-        opportunities={opps}
-        getLead={getLead}
-        onRemove={requestRemoveOpportunity}
-      />
+      <main className="mx-auto max-w-7xl space-y-8 p-6">
+        <LeadsTable
+          leads={leads.leads}
+          loading={leads.loading}
+          error={leads.error}
+          query={leads.query}
+          setQuery={leads.setQuery}
+          status={leads.status}
+          setStatus={leads.setStatus}
+          sort={leads.sort}
+          setSort={leads.setSort}
+          onRowClick={handleRowClick}
+        />
+
+        <OpportunitiesTable
+          opportunities={opps}
+          getLead={getLead}
+          onRemove={requestRemoveOpportunity}
+        />
+
+        <ObservabilityPanel />
+      </main>
 
       <LeadDetail
         lead={selected}
@@ -102,6 +108,6 @@ export default function App() {
         onConfirm={confirmRemove}
         onCancel={cancelRemove}
       />
-    </div>
+    </>
   )
 }
