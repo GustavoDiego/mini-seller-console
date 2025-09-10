@@ -10,17 +10,11 @@ export interface Lead {
   status: LeadStatus
 }
 
-export type OpportunityStage =
-  | 'New'
-  | 'Qualification'
-  | 'Proposal'
-  | 'Closed Won'
-  | 'Closed Lost'
+export type OpportunityStage = 'New' | 'Qualification' | 'Proposal' | 'Closed Won' | 'Closed Lost'
 
 export interface Opportunity {
   id: string
-  name: string
+  leadId: string
   stage: OpportunityStage
   amount?: number
-  accountName: string
 }

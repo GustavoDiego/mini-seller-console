@@ -10,9 +10,7 @@ export default function App() {
   const [selected, setSelected] = useState<Lead | null>(null)
   const [opps, setOpps] = useState<Opportunity[]>([])
 
-  const handleRowClick = (lead: Lead) => {
-    setSelected(lead)
-  }
+  const handleRowClick = (lead: Lead) => setSelected(lead)
 
   const handleSaveLead = async (updated: Lead) => {
     try {
@@ -24,15 +22,27 @@ export default function App() {
   }
 
   const handleConvert = (lead: Lead, amount?: number) => {
+    if (opps.some(o => o.leadId === lead.id)) {
+      alert('An opportunity for this lead already exists.')
+      return
+    }
     const newOpp: Opportunity = {
       id: `O-${Date.now()}`,
-      name: lead.name,
+      leadId: lead.id,
       stage: 'New',
-      amount,
-      accountName: lead.company
+      amount
     }
     setOpps(prev => [...prev, newOpp])
     setSelected(null)
+  }
+
+  const handleRemoveOpportunity = (opportunityId: string) => {
+    setOpps(prev => prev.filter(o => o.id !== opportunityId))
+  }
+
+  const getLead = (leadId: string) => {
+    if (selected?.id === leadId) return selected
+    return leads.leads.find(l => l.id === leadId)
   }
 
   return (
@@ -48,7 +58,11 @@ export default function App() {
 
       <section className="space-y-2">
         <h2 className="text-lg font-medium text-gray-800">Opportunities</h2>
-        <OpportunitiesTable opportunities={opps} />
+        <OpportunitiesTable
+          opportunities={opps}
+          getLead={getLead}
+          onRemove={handleRemoveOpportunity}
+        />
       </section>
 
       <LeadDetail

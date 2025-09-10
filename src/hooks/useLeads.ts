@@ -66,6 +66,8 @@ export function useLeads({ initialSort = 'scoreDesc' }: Options = {}) {
     }
   }
 
+  const getById = (id: string) => raw.find(l => l.id === id)
+
   return {
     loading,
     error,
@@ -76,6 +78,7 @@ export function useLeads({ initialSort = 'scoreDesc' }: Options = {}) {
     setStatus,
     sort,
     setSort,
-    updateLead
+    updateLead,
+    getById
   }
 }

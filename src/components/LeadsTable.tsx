@@ -1,5 +1,6 @@
 import type { Lead, LeadStatus } from '../types/models'
-import { Badge, Field, Input, Label, Select, Table, Tbody, Td, Th, Thead, Tr } from './UI'
+import { Badge, Field, IconButton, Input, Label, Select, Table, Tbody, Td, Th, Thead, Tr } from './UI'
+import { Search, Filter, ArrowUpDown, X } from 'lucide-react'
 
 type SortDir = 'scoreDesc' | 'scoreAsc'
 
@@ -33,42 +34,64 @@ export default function LeadsTable({
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <Field>
           <Label htmlFor="lead-search">Search</Label>
-          <Input
-            id="lead-search"
-            placeholder="Search by name or company"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            aria-label="Search leads"
-          />
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Input
+              id="lead-search"
+              placeholder="Search by name or company"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              aria-label="Search leads"
+              className="pl-9 pr-10"
+            />
+            {query && (
+              <IconButton
+                aria-label="Clear search"
+                className="absolute right-1 top-1/2 -translate-y-1/2"
+                onClick={() => setQuery('')}
+                title="Clear"
+              >
+                <X className="h-4 w-4" />
+              </IconButton>
+            )}
+          </div>
         </Field>
 
         <Field>
           <Label htmlFor="lead-status">Status</Label>
-          <Select
-            id="lead-status"
-            value={status}
-            onChange={e => setStatus(e.target.value as LeadStatus | 'all')}
-            aria-label="Filter by status"
-          >
-            <option value="all">All statuses</option>
-            <option value="new">New</option>
-            <option value="contacted">Contacted</option>
-            <option value="qualified">Qualified</option>
-            <option value="disqualified">Disqualified</option>
-          </Select>
+          <div className="relative">
+            <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Select
+              id="lead-status"
+              value={status}
+              onChange={e => setStatus(e.target.value as LeadStatus | 'all')}
+              aria-label="Filter by status"
+              className="appearance-none pl-9 pr-8"
+            >
+              <option value="all">All statuses</option>
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="disqualified">Disqualified</option>
+            </Select>
+          </div>
         </Field>
 
         <Field>
           <Label htmlFor="lead-sort">Sort</Label>
-          <Select
-            id="lead-sort"
-            value={sort}
-            onChange={e => setSort(e.target.value as SortDir)}
-            aria-label="Sort by score"
-          >
-            <option value="scoreDesc">Score (high → low)</option>
-            <option value="scoreAsc">Score (low → high)</option>
-          </Select>
+          <div className="relative">
+            <ArrowUpDown className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Select
+              id="lead-sort"
+              value={sort}
+              onChange={e => setSort(e.target.value as SortDir)}
+              aria-label="Sort by score"
+              className="appearance-none pl-9 pr-8"
+            >
+              <option value="scoreDesc">Score (high → low)</option>
+              <option value="scoreAsc">Score (low → high)</option>
+            </Select>
+          </div>
         </Field>
       </div>
 
@@ -109,9 +132,7 @@ export default function LeadsTable({
                 <Td>{lead.source}</Td>
                 <Td>{lead.score}</Td>
                 <Td>
-                  <Badge className="capitalize">
-                    {lead.status}
-                  </Badge>
+                  <Badge className="capitalize">{lead.status}</Badge>
                 </Td>
               </Tr>
             ))}

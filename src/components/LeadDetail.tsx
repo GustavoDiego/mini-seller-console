@@ -1,8 +1,9 @@
 import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import type { Lead, LeadStatus } from '../types/models'
-import { Button, Field, Input, Label, Select } from './UI'
+import { Button, Field, IconButton, Input, Label, Select, Spinner } from './UI'
 import { isValidEmail } from '../utils/validation'
+import { X, Save, CircleDollarSign } from 'lucide-react'
 
 interface Props {
   lead: Lead | null
@@ -53,11 +54,9 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
     if (e.key === 'Escape') onClose()
   }
 
-  const parsedAmount =
-    amount.trim() === '' ? undefined : Number(amount.replace(',', '.'))
+  const parsedAmount = amount.trim() === '' ? undefined : Number(amount.replace(',', '.'))
   const amountInvalid =
-    amount.trim() !== '' &&
-    (Number.isNaN(parsedAmount as number) || (parsedAmount as number) < 0)
+    amount.trim() !== '' && (Number.isNaN(parsedAmount as number) || (parsedAmount as number) < 0)
 
   return (
     <div className="fixed inset-0 z-50 flex pointer-events-none">
@@ -80,9 +79,9 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
           <h2 id="lead-detail-title" className="text-lg font-semibold text-gray-900">
             Lead Detail
           </h2>
-          <Button variant="ghost" onClick={onClose} aria-label="Close panel">
-            ✕
-          </Button>
+          <IconButton aria-label="Close panel" onClick={onClose} rounded="full">
+            <X className="h-5 w-5" />
+          </IconButton>
         </header>
 
         <div className="flex-1 space-y-4 overflow-y-auto p-4">
@@ -146,12 +145,11 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={saving || !isValidEmail(email)}>
+            {saving ? <Spinner /> : <Save className="h-4 w-4" />}
             {saving ? 'Saving…' : 'Save'}
           </Button>
-          <Button
-            onClick={() => onConvert({ ...lead, email, status }, parsedAmount)}
-            disabled={amountInvalid}
-          >
+          <Button onClick={() => onConvert({ ...lead, email, status }, parsedAmount)} disabled={amountInvalid}>
+            <CircleDollarSign className="h-4 w-4" />
             Convert to Opportunity
           </Button>
         </footer>
