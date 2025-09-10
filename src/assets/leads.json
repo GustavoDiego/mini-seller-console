@@ -1,0 +1,14 @@
+[
+  { "id": "L-001", "name": "Alice Johnson", "company": "Acme Corp", "email": "alice@acme.com", "source": "Web", "score": 92, "status": "new" },
+  { "id": "L-002", "name": "Bob Smith", "company": "Beta Labs", "email": "bob@betalabs.io", "source": "Referral", "score": 80, "status": "contacted" },
+  { "id": "L-003", "name": "Carmen Lee", "company": "CloudNine", "email": "carmen@cloudnine.dev", "source": "Event", "score": 74, "status": "qualified" },
+  { "id": "L-004", "name": "Diego Alvarez", "company": "Delta Systems", "email": "diego@delta.systems", "source": "Web", "score": 65, "status": "disqualified" },
+  { "id": "L-005", "name": "Eva Martins", "company": "Everest Tech", "email": "eva@everest.tech", "source": "Referral", "score": 88, "status": "contacted" },
+  { "id": "L-006", "name": "Frank Zhou", "company": "FusionWorks", "email": "frank@fusion.works", "source": "Outbound", "score": 57, "status": "new" },
+  { "id": "L-007", "name": "Grace Kim", "company": "GreenGrid", "email": "grace@greengrid.io", "source": "Web", "score": 93, "status": "qualified" },
+  { "id": "L-008", "name": "Hector Ruiz", "company": "Helios Data", "email": "hector@heliosdata.ai", "source": "Event", "score": 71, "status": "new" },
+  { "id": "L-009", "name": "Isabel Ortiz", "company": "Ionica", "email": "isabel@ionica.app", "source": "Referral", "score": 84, "status": "contacted" },
+  { "id": "L-010", "name": "Jack Turner", "company": "Jetstream", "email": "jack@jetstream.dev", "source": "Outbound", "score": 62, "status": "disqualified" },
+  { "id": "L-011", "name": "Karen Silva", "company": "Kite Labs", "email": "karen@kitelabs.io", "source": "Web", "score": 77, "status": "qualified" },
+  { "id": "L-012", "name": "Leo Pereira", "company": "Lumenix", "email": "leo@lumenix.co", "source": "Event", "score": 69, "status": "new" }
+]
