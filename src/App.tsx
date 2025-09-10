@@ -4,7 +4,6 @@ import LeadDetail from './components/LeadDetail'
 import OpportunitiesTable from './components/OpportunitiesTable'
 import { useLeads } from './hooks/useLeads'
 import type { Lead, Opportunity } from './types/models'
-import { Button } from './components/UI'
 
 export default function App() {
   const leads = useLeads()
@@ -24,12 +23,12 @@ export default function App() {
     }
   }
 
-  const handleConvert = (lead: Lead) => {
+  const handleConvert = (lead: Lead, amount?: number) => {
     const newOpp: Opportunity = {
       id: `O-${Date.now()}`,
       name: lead.name,
       stage: 'New',
-      amount: undefined,
+      amount,
       accountName: lead.company
     }
     setOpps(prev => [...prev, newOpp])
@@ -56,15 +55,8 @@ export default function App() {
         lead={selected}
         onClose={() => setSelected(null)}
         onSave={handleSaveLead}
+        onConvert={handleConvert}
       />
-
-      {selected && (
-        <div className="fixed bottom-6 right-6 z-40">
-          <Button onClick={() => handleConvert(selected)}>
-            Convert to Opportunity
-          </Button>
-        </div>
-      )}
     </div>
   )
 }
