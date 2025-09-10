@@ -15,10 +15,12 @@ export default function App() {
     setSelected(lead)
   }
 
-  const handleSaveLead = (updated: Lead) => {
-    const index = leads.leads.findIndex(l => l.id === updated.id)
-    if (index !== -1) {
-      leads.leads[index] = updated
+  const handleSaveLead = async (updated: Lead) => {
+    try {
+      await leads.updateLead(updated)
+      setSelected(null)
+    } catch (e) {
+      alert((e as Error).message || 'Failed to save')
     }
   }
 
