@@ -45,9 +45,7 @@ export default function App() {
   }
 
   const confirmRemove = () => {
-    if (toRemoveId) {
-      setOpps(prev => prev.filter(o => o.id !== toRemoveId))
-    }
+    if (toRemoveId) setOpps(prev => prev.filter(o => o.id !== toRemoveId))
     setToRemoveId(null)
     setConfirmOpen(false)
   }
@@ -57,27 +55,36 @@ export default function App() {
     setConfirmOpen(false)
   }
 
-  const getLead = (leadId: string) => leads.getById(leadId) ?? (selected?.id === leadId ? selected : undefined)
+  const getLead = (leadId: string) =>
+    leads.getById(leadId) ?? (selected?.id === leadId ? selected : undefined)
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8 p-4">
-      <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Mini Seller Console</h1>
-      </header>
+    <div className="mx-auto max-w-7xl space-y-8 p-6">
+      <div className="space-y-1">
+        <h1 className="text-3xl font-semibold tracking-tight text-gray-900">Mini Seller Console</h1>
+        <p className="text-sm text-gray-600">
+          Triage leads, edit details, and convert to opportunities.
+        </p>
+      </div>
 
-      <section className="space-y-2">
-        <h2 className="text-lg font-medium text-gray-800">Leads</h2>
-        <LeadsTable {...leads} onRowClick={handleRowClick} />
-      </section>
+      <LeadsTable
+        leads={leads.leads}
+        loading={leads.loading}
+        error={leads.error}
+        query={leads.query}
+        setQuery={leads.setQuery}
+        status={leads.status}
+        setStatus={leads.setStatus}
+        sort={leads.sort}
+        setSort={leads.setSort}
+        onRowClick={handleRowClick}
+      />
 
-      <section className="space-y-2">
-        <h2 className="text-lg font-medium text-gray-800">Opportunities</h2>
-        <OpportunitiesTable
-          opportunities={opps}
-          getLead={getLead}
-          onRemove={requestRemoveOpportunity}
-        />
-      </section>
+      <OpportunitiesTable
+        opportunities={opps}
+        getLead={getLead}
+        onRemove={requestRemoveOpportunity}
+      />
 
       <LeadDetail
         lead={selected}

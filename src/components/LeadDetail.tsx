@@ -2,8 +2,8 @@ import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import type { Lead, LeadStatus } from '../types/models'
 import { Button, Field, IconButton, Input, Label, Select, Spinner } from './UI'
-import { isValidEmail } from '../utils/validation'
 import { X, Save, CircleDollarSign } from 'lucide-react'
+import { isValidEmail } from '../utils/validation'
 
 interface Props {
   lead: Lead | null
@@ -18,10 +18,17 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
   const [amount, setAmount] = useState<string>('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
   const panelRef = useRef<HTMLDivElement>(null)
+  const [openAnim, setOpenAnim] = useState(false)
 
   useEffect(() => {
-    if (lead && panelRef.current) panelRef.current.focus()
+    if (lead) {
+      requestAnimationFrame(() => setOpenAnim(true))
+      panelRef.current?.focus()
+    } else {
+      setOpenAnim(false)
+    }
   }, [lead])
 
   useEffect(() => {
@@ -34,6 +41,19 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
 
   if (!lead) return null
 
+  const parsedAmount = amount.trim() === '' ? undefined : Number(amount.replace(',', '.'))
+  const amountInvalid =
+    amount.trim() !== '' && (Number.isNaN(parsedAmount as number) || (parsedAmount as number) < 0)
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') smoothClose()
+  }
+
+  const smoothClose = () => {
+    setOpenAnim(false)
+    setTimeout(onClose, 250)
+  }
+
   const handleSave = async () => {
     setError(null)
     if (!isValidEmail(email)) {
@@ -43,6 +63,7 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
     setSaving(true)
     try {
       await Promise.resolve(onSave({ ...lead, email, status }))
+      smoothClose()
     } catch (e) {
       setError((e as Error).message || 'Failed to save')
     } finally {
@@ -50,36 +71,32 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') onClose()
-  }
-
-  const parsedAmount = amount.trim() === '' ? undefined : Number(amount.replace(',', '.'))
-  const amountInvalid =
-    amount.trim() !== '' && (Number.isNaN(parsedAmount as number) || (parsedAmount as number) < 0)
-
   return (
-    <div className="fixed inset-0 z-50 flex pointer-events-none">
+    <div className="fixed inset-0 z-[70] flex pointer-events-none">
       <div
-        className="fixed inset-0 z-40 bg-black/50 pointer-events-auto"
+        className={`fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm transition-opacity duration-300 pointer-events-auto ${openAnim ? 'opacity-100' : 'opacity-0'}`}
         aria-hidden="true"
-        onClick={onClose}
+        onClick={smoothClose}
       />
+
       <div
         ref={panelRef}
         tabIndex={-1}
-        className="ml-auto flex h-full w-full max-w-md flex-col bg-white shadow-xl focus:outline-none z-50 pointer-events-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="lead-detail-title"
-        onClick={e => e.stopPropagation()}
         onKeyDown={handleKeyDown}
+        onClick={e => e.stopPropagation()}
+        className={`ml-auto flex h-full w-full max-w-md flex-col bg-white shadow-2xl border-l border-slate-200 focus:outline-none pointer-events-auto transform transition-transform duration-300 ease-out md:rounded-l-2xl ${openAnim ? 'translate-x-0' : 'translate-x-full'}`}
       >
-        <header className="flex items-center justify-between border-b p-4">
-          <h2 id="lead-detail-title" className="text-lg font-semibold text-gray-900">
-            Lead Detail
-          </h2>
-          <IconButton aria-label="Close panel" onClick={onClose} rounded="full">
+        <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-white/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+          <div>
+            <h2 id="lead-detail-title" className="text-lg font-semibold text-gray-900">
+              Lead detail
+            </h2>
+            <p className="text-xs text-gray-500">Edit contact info and convert to opportunity</p>
+          </div>
+          <IconButton aria-label="Close panel" onClick={smoothClose} rounded="full">
             <X className="h-5 w-5" />
           </IconButton>
         </header>
@@ -140,15 +157,21 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
           {error && <p className="text-sm text-red-600">{error}</p>}
         </div>
 
-        <footer className="flex flex-wrap justify-end gap-2 border-t p-4">
-          <Button variant="secondary" onClick={onClose} disabled={saving}>
+        <footer className="sticky bottom-0 z-10 flex flex-wrap justify-end gap-2 border-t bg-white/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-white/70">
+          <Button variant="secondary" onClick={smoothClose} disabled={saving}>
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={saving || !isValidEmail(email)}>
             {saving ? <Spinner /> : <Save className="h-4 w-4" />}
             {saving ? 'Saving…' : 'Save'}
           </Button>
-          <Button onClick={() => onConvert({ ...lead, email, status }, parsedAmount)} disabled={amountInvalid}>
+          <Button
+            onClick={() => {
+              onConvert({ ...lead, email, status }, parsedAmount)
+              smoothClose()
+            }}
+            disabled={amountInvalid}
+          >
             <CircleDollarSign className="h-4 w-4" />
             Convert to Opportunity
           </Button>
