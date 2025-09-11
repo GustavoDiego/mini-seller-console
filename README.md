@@ -1,69 +1,51 @@
-# React + TypeScript + Vite
+# Mini Seller Console
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small, polished React + Vite + Tailwind app for triaging **Leads**, editing details, and converting them into **Opportunities** with a clean, Material-like UI and strong accessibility.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Leads**
+  - Search by name/company (local + global search in the top app bar)
+  - Filter by status and sort by score (custom dropdowns with keyboard support)
+  - Paginated table with sticky headers and row highlighting
+  - Lead detail **slide-over** (animated, sticky header/footer, ESC to close)
+  - Email validation and inline errors
 
-## Expanding the ESLint configuration
+- **Opportunities**
+  - Convert directly from the Lead detail (optional amount in USD)
+  - Prevent duplicate opportunity for the same lead
+  - Paginated table with remove action
+  - **Confirm dialog** (accessible `alertdialog`) before removing
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Design & UX**
+  - Material-inspired surface/shape/elevation, smooth scrolling
+  - Top App Bar with blurred background and identity mark
+  - **Custom SelectMenu**: auto-flip/clamp to avoid overflow; respects card boundaries
+  - Styled scrollbars; consistent spacing and hierarchy
+  - **Observability panel**: KPIs + lightweight SVG sparklines
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **State & Performance**
+  - Fast client-side filtering, sorting, and pagination
+  - Small utilities for **persistent UI preferences** (e.g., pagination) via `usePersistentState`
+  - Optimistic UI on edits
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- **Accessibility**
+  - Proper roles/labels for dialogs and menus
+  - Keyboard navigation: ↑/↓, Enter/Space, ESC; focus management on open/close
+  - High-contrast states and clear hit targets
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **React** + **TypeScript** (Vite)
+- **Tailwind CSS v4** with **@tailwindcss/postcss**
+- **lucide-react** icons
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Getting Started
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Prerequisites
+- Node.js 18+ (tested with Node 22)
+- pnpm 8+ (tested with pnpm 10)
+
+### Install
+```bash
+pnpm install
