@@ -60,11 +60,27 @@ export default function App() {
   const getLead = (leadId: string) =>
     leads.getById(leadId) ?? (selected?.id === leadId ? selected : undefined)
 
+  const q = leads.query.trim().toLowerCase()
+  const filteredOpps = opps.filter(opp => {
+    if (!q) return true
+    const lead = getLead(opp.leadId)
+    const hay = [
+      lead?.name,
+      lead?.company,
+      opp.stage,
+      opp.amount != null ? String(opp.amount) : ''
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+    return hay.includes(q)
+  })
+
   return (
     <>
       <AppBar
         title="Mini Seller Console"
-        subtitle="Modern, consistent, and accessible"
+        subtitle="Leads & Opportunities"
         searchValue={leads.query}
         onSearchChange={leads.setQuery}
       />
@@ -84,7 +100,7 @@ export default function App() {
         />
 
         <OpportunitiesTable
-          opportunities={opps}
+          opportunities={filteredOpps}
           getLead={getLead}
           onRemove={requestRemoveOpportunity}
         />

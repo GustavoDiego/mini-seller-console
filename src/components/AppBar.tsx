@@ -1,4 +1,4 @@
-import { Search, Sparkles } from 'lucide-react'
+import { Search, Leaf } from 'lucide-react'
 import { Input } from './UI'
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 
 export default function AppBar({
   title = 'Mini Seller Console',
-  subtitle = 'Modern, consistent, and accessible',
+  subtitle = 'Leads & Opportunities',
   searchValue,
   onSearchChange,
   rightSlot
@@ -21,7 +21,7 @@ export default function AppBar({
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-3">
         <div className="flex items-center gap-3">
           <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white">
-            <Sparkles className="h-5 w-5" />
+            <Leaf className="h-5 w-5" />
           </div>
           <div className="leading-tight">
             <div className="text-base font-semibold text-gray-900">{title}</div>

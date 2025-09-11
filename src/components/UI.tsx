@@ -138,6 +138,7 @@ export function Badge(props: React.HTMLAttributes<HTMLSpanElement>) {
 export function Card(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
+      data-card-boundary
       {...props}
       className={cn('rounded-xl border border-gray-200 bg-white shadow-sm', props.className)}
     />

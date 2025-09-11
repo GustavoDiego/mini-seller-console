@@ -2,13 +2,11 @@ import { useEffect } from 'react'
 import type { Lead, LeadStatus } from '../types/models'
 import {
   Badge,
-  Button,
   Card,
   CardBody,
   CardHeader,
   IconButton,
   Input,
-  Select,
   Table,
   Tbody,
   Td,
@@ -18,6 +16,7 @@ import {
 } from './UI'
 import { Search, Filter, ArrowUpDown, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { usePersistentState } from '../hooks/usePersistentState'
+import SelectMenu from './SelectMenu'
 
 type SortDir = 'scoreDesc' | 'scoreAsc'
 
@@ -33,6 +32,19 @@ interface Props {
   setSort: (s: SortDir) => void
   onRowClick?: (lead: Lead) => void
 }
+
+const STATUS_OPTS: { value: LeadStatus | 'all'; label: string }[] = [
+  { value: 'all', label: 'All statuses' },
+  { value: 'new', label: 'New' },
+  { value: 'contacted', label: 'Contacted' },
+  { value: 'qualified', label: 'Qualified' },
+  { value: 'disqualified', label: 'Disqualified' }
+]
+
+const SORT_OPTS: { value: SortDir; label: string }[] = [
+  { value: 'scoreDesc', label: 'Score (high → low)' },
+  { value: 'scoreAsc', label: 'Score (low → high)' }
+]
 
 export default function LeadsTable({
   leads,
@@ -63,9 +75,9 @@ export default function LeadsTable({
   return (
     <Card>
       <CardHeader>
-        <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="grid w-full grid-cols-1 gap-3 md:max-w-3xl md:grid-cols-3">
-            <div className="relative">
+        <div className="flex w-full flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+          <div className="grid w-full grid-cols-12 gap-3 px-3 md:px-4">
+            <div className="relative col-span-12 min-w-0 md:col-span-6">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <Input
                 placeholder="Search by name or company"
@@ -86,53 +98,53 @@ export default function LeadsTable({
               )}
             </div>
 
-            <div className="relative">
-              <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <Select
+            <div className="col-span-12 min-w-0 md:col-span-3">
+              <SelectMenu
                 value={status}
-                onChange={e => setStatus(e.target.value as LeadStatus | 'all')}
-                aria-label="Filter by status"
-                className="appearance-none pl-9 pr-8"
-              >
-                <option value="all">All statuses</option>
-                <option value="new">New</option>
-                <option value="contacted">Contacted</option>
-                <option value="qualified">Qualified</option>
-                <option value="disqualified">Disqualified</option>
-              </Select>
+                onChange={v => setStatus(v)}
+                options={STATUS_OPTS}
+                ariaLabel="Filter by status"
+                className="w-full"
+                prefixIcon={<Filter className="h-4 w-4 text-gray-400" />}
+                align="left"
+                fullWidth
+              />
             </div>
 
-            <div className="relative">
-              <ArrowUpDown className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <Select
+            <div className="col-span-12 min-w-0 md:col-span-3">
+              <SelectMenu
                 value={sort}
-                onChange={e => setSort(e.target.value as SortDir)}
-                aria-label="Sort by score"
-                className="appearance-none pl-9 pr-8"
-              >
-                <option value="scoreDesc">Score (high → low)</option>
-                <option value="scoreAsc">Score (low → high)</option>
-              </Select>
+                onChange={v => setSort(v)}
+                options={SORT_OPTS}
+                ariaLabel="Sort by score"
+                className="w-full"
+                prefixIcon={<ArrowUpDown className="h-4 w-4 text-gray-400" />}
+                align="right"
+                fullWidth
+              />
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-[240px] flex-shrink-0 items-center gap-2 pr-3 xl:justify-end">
             <span className="text-sm text-gray-600">Rows per page</span>
-            <Select
-              value={String(perPage)}
-              onChange={e => {
-                const v = Number(e.target.value)
-                setPerPage(v)
+            <SelectMenu
+              value={String(perPage) as '5' | '10' | '25' | '50'}
+              onChange={v => {
+                const num = Number(v)
+                setPerPage(num)
                 setPage(1)
               }}
-              aria-label="Rows per page"
+              options={[
+                { value: '5', label: '5' },
+                { value: '10', label: '10' },
+                { value: '25', label: '25' },
+                { value: '50', label: '50' }
+              ]}
+              ariaLabel="Rows per page"
               className="w-28"
-            >
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-            </Select>
+              align="right"
+              compact
+            />
           </div>
         </div>
       </CardHeader>
@@ -183,7 +195,7 @@ export default function LeadsTable({
               </Tbody>
             </Table>
 
-            <div className="mt-3 flex items-center justify-between border-t pt-3">
+            <div className="mt-3 flex items-center justify-between border-t border-gray-200 pt-3">
               <div className="text-sm text-gray-600">
                 Showing {start}–{end} of {total}
               </div>
