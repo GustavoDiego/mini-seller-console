@@ -26,8 +26,13 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
     if (lead) {
       requestAnimationFrame(() => setOpenAnim(true))
       panelRef.current?.focus()
+      document.body.style.overflow = 'hidden'
     } else {
       setOpenAnim(false)
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
     }
   }, [lead])
 
@@ -72,9 +77,9 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
   }
 
   return (
-    <div className="fixed inset-0 z-[70] flex pointer-events-none">
+    <div className="fixed inset-0 z-[100] flex pointer-events-none">
       <div
-        className={`fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm transition-opacity duration-300 pointer-events-auto ${openAnim ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 z-[101] bg-black/40 backdrop-blur-sm transition-opacity duration-300 pointer-events-auto ${openAnim ? 'opacity-100' : 'opacity-0'}`}
         aria-hidden="true"
         onClick={smoothClose}
       />
@@ -87,7 +92,7 @@ export default function LeadDetail({ lead, onClose, onSave, onConvert }: Props) 
         aria-labelledby="lead-detail-title"
         onKeyDown={handleKeyDown}
         onClick={e => e.stopPropagation()}
-        className={`ml-auto flex h-full w-full max-w-md flex-col bg-white shadow-2xl border-l border-slate-200 focus:outline-none pointer-events-auto transform transition-transform duration-300 ease-out md:rounded-l-2xl ${openAnim ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`ml-auto z-[102] flex h-full w-full max-w-md transform flex-col border-l border-slate-200 bg-white shadow-2xl transition-transform duration-300 ease-out focus:outline-none pointer-events-auto md:rounded-l-2xl ${openAnim ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-white/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-white/70">
           <div>
